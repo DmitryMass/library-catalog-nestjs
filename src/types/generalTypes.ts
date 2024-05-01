@@ -52,3 +52,9 @@ export enum ROLE {
   general = 'general',
   user = 'user',
 }
+
+export enum BookType {
+  fiction = 'Художня література',
+  book = 'Підручник',
+  none = 'Не обрано',
+}
