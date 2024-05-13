@@ -50,6 +50,13 @@ export class Book {
   dateOfArrival: Date;
 
   @ApiProperty({
+    example: 'Дата вибуття',
+    description: '10.10.2010',
+  })
+  @Prop({ default: '' })
+  dateOfWithdrawal: Date;
+
+  @ApiProperty({
     example: 'Номер супровідного документу',
     description: '2345667',
   })
@@ -79,6 +86,13 @@ export class Book {
   })
   @Prop({ default: 0 })
   classNumber: number;
+
+  @ApiProperty({
+    example: 'Інвентарний номер',
+    description: '12233555',
+  })
+  @Prop({ default: 0 })
+  inventoryNumber: number;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

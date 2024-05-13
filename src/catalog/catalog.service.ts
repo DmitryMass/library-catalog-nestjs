@@ -24,14 +24,14 @@ export class CatalogService {
     const parsePage = parseInt(page);
     const skip = (parsePage - 1) * parseLimit;
     const books = await this.bookModel
-      .find({ type })
+      .find({ type, isDeleted: false })
       .skip(skip)
       .limit(parseLimit);
 
     if (!books) {
       throw new NotFoundException(ERROR_MSG.booksNotFound);
     }
-    const totalBook = await this.bookModel.find({ type });
+    const totalBook = await this.bookModel.find({ type, isDeleted: false });
     const result = await this.bookModel.aggregate([
       {
         $match: {
@@ -51,6 +51,30 @@ export class CatalogService {
       books,
       total: totalBook.length,
       totalPrice: result.length ? result[0].totalPrice : 0,
+    };
+  }
+  async getArchiveBooks(
+    page: string,
+    limit: string,
+  ): Promise<{ books: Book[]; total: number }> {
+    const parseLimit = parseInt(limit);
+    const parsePage = parseInt(page);
+    const skip = (parsePage - 1) * parseLimit;
+
+    const books = await this.bookModel
+      .find({ isDeleted: true })
+      .skip(skip)
+      .limit(parseLimit);
+
+    if (!books) {
+      throw new NotFoundException(ERROR_MSG.booksNotFound);
+    }
+
+    const totalBook = await this.bookModel.find({ isDeleted: true });
+
+    return {
+      books,
+      total: totalBook.length,
     };
   }
 
@@ -83,6 +107,26 @@ export class CatalogService {
     }
   }
 
+  async searchArchiveBookBy(query: string): Promise<Book[]> {
+    try {
+      console.log(query);
+      const book = await this.bookModel.find({
+        isDeleted: true,
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { author: { $regex: query, $options: 'i' } },
+        ],
+      });
+      if (!book) {
+        throw new NotFoundException(ERROR_MSG.bookNotFound);
+      }
+
+      return book;
+    } catch (err) {
+      throw new InternalServerErrorException(ERROR_MSG.server);
+    }
+  }
+
   async createBook(createBookDto: CreateBookDto): Promise<MessageResponse> {
     const {
       name,
@@ -94,6 +138,8 @@ export class CatalogService {
       publicationYear,
       type,
       classNumber,
+      inventoryNumber,
+      dateOfWithdrawal,
     } = createBookDto;
 
     try {
@@ -107,6 +153,8 @@ export class CatalogService {
         publicationYear,
         type,
         classNumber,
+        inventoryNumber,
+        dateOfWithdrawal,
       });
 
       return { message: SUCCESS_MSG.createBookSuccess };

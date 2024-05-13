@@ -37,5 +37,15 @@ export class CreateBookDto {
 
   @ApiProperty()
   @IsDate()
+  @IsOptional()
+  dateOfWithdrawal: Date;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  inventoryNumber: number;
+
+  @ApiProperty()
+  @IsDate()
   dateOfArrival: Date;
 }

@@ -87,11 +87,49 @@ export class CatalogController {
     description: ERROR_MSG.server,
   })
   @Get('search/:type')
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
   searchBookBy(
     @Param('type') type: string,
     @Query('q') query: string,
   ): Promise<Book[]> {
     return this.catalogService.searchBookBy(query, type);
+  }
+
+  @ApiOperation({ summary: 'Отримати архівовані книги' })
+  @ApiBearerAuth('Token')
+  @ApiUnauthorizedResponse({
+    description: ERROR_MSG.userAccess,
+  })
+  @ApiOkResponse({
+    description: SUCCESS_MSG.getBooks,
+  })
+  @ApiNotFoundResponse({ description: ERROR_MSG.booksNotFound })
+  @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
+  @Get('archive/books')
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  getArchiveBooks(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+  ): Promise<{ books: Book[]; total: number }> {
+    return this.catalogService.getArchiveBooks(page, limit);
+  }
+
+  @ApiOperation({ summary: 'Пошук архівованих книг' })
+  @ApiBearerAuth('Token')
+  @ApiOkResponse({
+    description: SUCCESS_MSG.getBooks,
+  })
+  @ApiUnauthorizedResponse({
+    description: ERROR_MSG.userAccess,
+  })
+  @ApiNotFoundResponse({ description: ERROR_MSG.booksNotFound })
+  @ApiInternalServerErrorResponse({
+    description: ERROR_MSG.server,
+  })
+  @Get('search/archive/books/data')
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  searchArchiveBookBy(@Query('q') query: string): Promise<Book[]> {
+    return this.catalogService.searchArchiveBookBy(query);
   }
 
   @ApiOperation({ summary: 'Додати нову кнгиу' })
