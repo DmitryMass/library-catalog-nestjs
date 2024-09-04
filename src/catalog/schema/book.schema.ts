@@ -1,7 +1,8 @@
+import { IsEnum } from 'class-validator';
+import { BookType } from 'types/generalTypes';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
-import { BookType } from 'src/types/generalTypes';
 
 @Schema({
   timestamps: true,

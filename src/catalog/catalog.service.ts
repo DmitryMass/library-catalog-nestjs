@@ -1,15 +1,18 @@
+import { Model } from 'mongoose';
+import { MessageResponse } from 'types/generalTypes';
+
+import { CreateBookDto } from './dto/createBook.dto';
 import { EditBookDto } from './dto/editBook.dto';
+import { Book } from './schema/book.schema';
+
+import { ERROR_MSG, SUCCESS_MSG } from '@utils/responses';
+
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { MessageResponse } from 'src/types/generalTypes';
-import { ERROR_MSG, SUCCESS_MSG } from 'src/utils/responses';
-import { CreateBookDto } from './dto/createBook.dto';
-import { Book } from './schema/book.schema';
 
 @Injectable()
 export class CatalogService {

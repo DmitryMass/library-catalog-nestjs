@@ -1,4 +1,20 @@
 import {
+  LoginResponse,
+  MessageResponse,
+  ROLE,
+  TokenCheckerResponse,
+} from 'types/generalTypes';
+
+import { AuthService } from './auth.service';
+import { LoginUserDto } from './dto/login-user.dto';
+import { RegistrationDto } from './dto/registration-user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RoleGuard } from './guards/role-checker.guard';
+
+import { ERROR_MSG, SUCCESS_MSG } from '@utils/responses';
+
+import {
   Body,
   Controller,
   Get,
@@ -18,22 +34,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { GlobalErrorCatcher } from 'src/middleware/error.middleware';
-import {
-  LoginResponse,
-  MessageResponse,
-  ROLE,
-  TokenCheckerResponse,
-} from 'src/types/generalTypes';
-import { AuthService } from './auth.service';
-import { LoginUserDto } from './dto/login-user.dto';
-import { RegistrationDto } from './dto/registration-user.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { RoleGuard } from './guards/role-checker.guard';
-import { ERROR_MSG, SUCCESS_MSG } from 'src/utils/responses';
 
-@UseFilters(GlobalErrorCatcher)
 @ApiTags('Авторизація користувача')
 @Controller('auth')
 export class AuthController {
@@ -68,10 +69,7 @@ export class AuthController {
   })
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  login(
-    @Request() req,
-    @Body() loginUserDto: LoginUserDto,
-  ): Promise<LoginResponse> {
+  login(@Request() req, @Body() loginUserDto: LoginUserDto) {
     return this.authService.login(req.user);
   }
 

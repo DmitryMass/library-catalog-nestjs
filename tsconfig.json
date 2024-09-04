@@ -9,7 +9,16 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
+    "paths": {
+      "@middleware/*": ["middleware/*"],
+      "@catalog/*": ["catalog/*"],
+      "@auth/*": ["auth/*"],
+      "@utils/*": ["utils/*"],
+      "@types/*": [
+        "./@types/*"
+      ]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

@@ -1,12 +1,14 @@
+import { Observable } from 'rxjs';
+
+import { ERROR_MSG } from '@utils/responses';
+
 import {
-  Injectable,
   CanActivate,
-  ExecutionContext,
   ConflictException,
+  ExecutionContext,
+  Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { ERROR_MSG } from 'src/utils/responses';
 
 @Injectable()
 export class AuthRoleGuard implements CanActivate {

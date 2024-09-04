@@ -1,3 +1,12 @@
+import * as bcrypt from 'bcryptjs';
+import { Model } from 'mongoose';
+import { LoginResponse, MessageResponse } from 'types/generalTypes';
+
+import { RegistrationDto } from './dto/registration-user.dto';
+import { User } from './schema/admin.schema';
+
+import { ERROR_MSG, SUCCESS_MSG } from '@utils/responses';
+
 import {
   BadRequestException,
   Injectable,
@@ -7,12 +16,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcryptjs';
-import { Model } from 'mongoose';
-import { LoginResponse, MessageResponse } from 'src/types/generalTypes';
-import { RegistrationDto } from './dto/registration-user.dto';
-import { User } from './schema/admin.schema';
-import { ERROR_MSG, SUCCESS_MSG } from 'src/utils/responses';
 
 @Injectable()
 export class AuthService {
@@ -59,12 +62,9 @@ export class AuthService {
     }
   }
 
-  async login(user): Promise<LoginResponse> {
+  async login(user) {
     const { id, email, role } = user;
     return {
-      id,
-      email,
-      role,
       token: this.jwtService.sign({
         id: id,
         email: email,

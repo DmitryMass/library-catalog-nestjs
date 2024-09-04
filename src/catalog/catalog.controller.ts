@@ -1,3 +1,15 @@
+import { MessageResponse, ROLE } from 'types/generalTypes';
+
+import { CatalogService } from './catalog.service';
+import { CreateBookDto } from './dto/createBook.dto';
+import { EditBookDto } from './dto/editBook.dto';
+import { Book } from './schema/book.schema';
+
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
+import { RoleGuard } from '@auth/guards/role-checker.guard';
+
+import { ERROR_MSG, SUCCESS_MSG } from '@utils/responses';
+
 import {
   Body,
   Controller,
@@ -7,7 +19,6 @@ import {
   Post,
   Put,
   Query,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -21,17 +32,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/guards/role-checker.guard';
-import { GlobalErrorCatcher } from 'src/middleware/error.middleware';
-import { MessageResponse, ROLE } from 'src/types/generalTypes';
-import { ERROR_MSG, SUCCESS_MSG } from 'src/utils/responses';
-import { CatalogService } from './catalog.service';
-import { CreateBookDto } from './dto/createBook.dto';
-import { EditBookDto } from './dto/editBook.dto';
-import { Book } from './schema/book.schema';
 
-@UseFilters(GlobalErrorCatcher)
 @Controller('catalog')
 @ApiTags('Catalog Routes')
 export class CatalogController {
@@ -106,7 +107,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.booksNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Get('archive/books')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  // @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
   getArchiveBooks(
     @Query('page') page: string,
     @Query('limit') limit: string,
