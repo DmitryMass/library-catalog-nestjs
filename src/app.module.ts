@@ -1,3 +1,5 @@
+import { BackupModule } from 'database-clone-backup/backup.module';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -8,6 +10,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -30,6 +33,8 @@ import { MongooseModule } from '@nestjs/mongoose';
       global: true,
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
+    BackupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
