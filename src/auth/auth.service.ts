@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { LoginResponse, MessageResponse } from 'types/generalTypes';
+import { MessageResponse } from 'types/generalTypes';
 
 import { RegistrationDto } from './dto/registration-user.dto';
 import { User } from './schema/admin.schema';

@@ -20,7 +20,6 @@ import {
   Get,
   Post,
   Request,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -69,6 +68,7 @@ export class AuthController {
   })
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   login(@Request() req, @Body() loginUserDto: LoginUserDto) {
     return this.authService.login(req.user);
   }

@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: 'library-catalog'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    ports:
+      - '3009:3000'
+    env_file:
+      - $env
+    restart: always
