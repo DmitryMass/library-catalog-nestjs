@@ -50,7 +50,7 @@ export class CatalogController {
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @ApiQuery({ name: 'type', required: true, type: String })
   @Get('books')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   getBooks(
     @Query('type') type: string,
     @Query('page') page: string,
@@ -70,7 +70,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.bookNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Get('books/:bookId')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   getBook(@Param('bookId') bookId: string): Promise<Book> {
     return this.catalogService.getBook(bookId);
   }
@@ -88,7 +88,7 @@ export class CatalogController {
     description: ERROR_MSG.server,
   })
   @Get('search/:type')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   searchBookBy(
     @Param('type') type: string,
     @Query('q') query: string,
@@ -107,7 +107,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.booksNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Get('archive/books')
-  // @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  // @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   getArchiveBooks(
     @Query('page') page: string,
     @Query('limit') limit: string,
@@ -128,7 +128,7 @@ export class CatalogController {
     description: ERROR_MSG.server,
   })
   @Get('search/archive/books/data')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   searchArchiveBookBy(@Query('q') query: string): Promise<Book[]> {
     return this.catalogService.searchArchiveBookBy(query);
   }
@@ -144,7 +144,7 @@ export class CatalogController {
   })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Post('createBook')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   createBook(@Body() createBookDto: CreateBookDto): Promise<MessageResponse> {
     return this.catalogService.createBook(createBookDto);
   }
@@ -161,7 +161,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.bookNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Put(':bookId')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   editBook(
     @Body() editBookDto: EditBookDto,
     @Param('bookId') bookId: string,
@@ -181,7 +181,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.bookNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Put('tobasket/:bookId')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   intoBasket(@Param('bookId') bookId: string): Promise<MessageResponse> {
     return this.catalogService.intoBasket(bookId);
   }
@@ -198,7 +198,7 @@ export class CatalogController {
   @ApiNotFoundResponse({ description: ERROR_MSG.bookNotFound })
   @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
   @Delete(':bookId')
-  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.user))
+  @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
   deleteBook(@Param('bookId') bookId: string): Promise<MessageResponse> {
     return this.catalogService.deleteBook(bookId);
   }

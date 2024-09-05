@@ -131,6 +131,7 @@ export class CatalogService {
   }
 
   async createBook(createBookDto: CreateBookDto): Promise<MessageResponse> {
+    console.log(1);
     const {
       name,
       author,
