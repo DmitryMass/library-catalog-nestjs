@@ -31,7 +31,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const corsOptions: CorsOptions = {
-    origin: '*', //need to change
+    origin: [
+      'https://anna-library-catalog.netlify.app',
+      'http://localhost:5173',
+      '*',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

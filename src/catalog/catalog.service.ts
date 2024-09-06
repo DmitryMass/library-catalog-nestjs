@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { MessageResponse } from 'types/generalTypes';
+import { BookType, MessageResponse } from 'types/generalTypes';
 
 import { CreateBookDto } from './dto/createBook.dto';
 import { EditBookDto } from './dto/editBook.dto';
@@ -22,40 +22,145 @@ export class CatalogService {
     type: string,
     page: string,
     limit: string,
+    classNumber: string = 'all',
   ): Promise<{ books: Book[]; total: number; totalPrice: number }> {
     const parseLimit = parseInt(limit);
     const parsePage = parseInt(page);
     const skip = (parsePage - 1) * parseLimit;
-    const books = await this.bookModel
-      .find({ type, isDeleted: false })
-      .skip(skip)
-      .limit(parseLimit);
+    if (classNumber === 'all') {
+      const books = await this.bookModel
+        .find({ type, isDeleted: false })
+        .skip(skip)
+        .limit(parseLimit);
 
-    if (!books) {
-      throw new NotFoundException(ERROR_MSG.booksNotFound);
+      if (!books) {
+        throw new NotFoundException(ERROR_MSG.booksNotFound);
+      }
+      const totalBook = await this.bookModel.find({ type, isDeleted: false });
+      const result = await this.bookModel.aggregate([
+        {
+          $match: {
+            isDeleted: false,
+            type,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalPrice: { $sum: '$price' },
+          },
+        },
+      ]);
+
+      return {
+        books,
+        total: totalBook.length,
+        totalPrice: result.length ? result[0].totalPrice : 0,
+      };
+    } else {
+      const books = await this.bookModel
+        .find({ type, isDeleted: false, classNumber: Number(classNumber) })
+        .skip(skip)
+        .limit(parseLimit);
+
+      if (!books) {
+        throw new NotFoundException(ERROR_MSG.booksNotFound);
+      }
+      const totalBook = await this.bookModel.find({
+        type,
+        isDeleted: false,
+        classNumber: Number(classNumber),
+      });
+      const result = await this.bookModel.aggregate([
+        {
+          $match: {
+            isDeleted: false,
+            type,
+            classNumber: Number(classNumber),
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalPrice: { $sum: '$price' },
+          },
+        },
+      ]);
+
+      return {
+        books,
+        total: totalBook.length,
+        totalPrice: result.length ? result[0].totalPrice : 0,
+      };
+      // const aggregation = await this.bookModel.aggregate([
+      //   {
+      //     $match: {
+      //       isDeleted: false,
+      //       type: BookType.book,
+      //       classNumber: Number(classNumber),
+      //     },
+      //   },
+      //   {
+      //     $facet: {
+      //       books: [{ $skip: skip }, { $limit: parseLimit }],
+      //       totalBooks: [{ $count: 'count' }],
+      //       totalPrice: [
+      //         { $group: { _id: null, totalPrice: { $sum: '$price' } } },
+      //       ],
+      //     },
+      //   },
+      // ]);
+      // const books = aggregation[0]?.books ?? [];
+      // const total = aggregation[0]?.totalBooks[0]?.count ?? 0;
+      // const totalPrice = aggregation[0]?.totalPrice[0]?.totalPrice ?? 0;
+
+      // return {
+      //   books,
+      //   total,
+      //   totalPrice,
+      // };
     }
-    const totalBook = await this.bookModel.find({ type, isDeleted: false });
-    const result = await this.bookModel.aggregate([
-      {
-        $match: {
-          isDeleted: false,
-          type,
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          totalPrice: { $sum: '$price' },
-        },
-      },
-    ]);
-
-    return {
-      books,
-      total: totalBook.length,
-      totalPrice: result.length ? result[0].totalPrice : 0,
-    };
   }
+
+  // async getBooksByClassNumber(
+  //   page: string,
+  //   limit: string,
+  //   classNumber: string,
+  // ): Promise<{ books: Book[]; total: number; totalPrice: number }> {
+  //   const parseLimit = parseInt(limit);
+  //   const parsePage = parseInt(page);
+  //   const skip = (parsePage - 1) * parseLimit;
+
+  //   // Выполняем агрегатный запрос
+  //   const aggregation = await this.bookModel.aggregate([
+  //     {
+  //       $match: {
+  //         isDeleted: false,
+  //         type: BookType.book,
+  //         classNumber: Number(classNumber),
+  //       },
+  //     },
+  //     {
+  //       $facet: {
+  //         books: [{ $skip: skip }, { $limit: parseLimit }],
+  //         totalBooks: [{ $count: 'count' }],
+  //         totalPrice: [
+  //           { $group: { _id: null, totalPrice: { $sum: '$price' } } },
+  //         ],
+  //       },
+  //     },
+  //   ]);
+  //   const books = aggregation[0]?.books ?? [];
+  //   const total = aggregation[0]?.totalBooks[0]?.count ?? 0;
+  //   const totalPrice = aggregation[0]?.totalPrice[0]?.totalPrice ?? 0;
+
+  //   return {
+  //     books,
+  //     total,
+  //     totalPrice,
+  //   };
+  // }
+
   async getArchiveBooks(
     page: string,
     limit: string,

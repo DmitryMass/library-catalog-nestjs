@@ -55,9 +55,30 @@ export class CatalogController {
     @Query('type') type: string,
     @Query('page') page: string,
     @Query('limit') limit: string,
+    @Query('classNumber') classNumber: string,
   ): Promise<{ books: Book[]; total: number; totalPrice: number }> {
-    return this.catalogService.getBooks(type, page, limit);
+    return this.catalogService.getBooks(type, page, limit, classNumber);
   }
+
+  // @ApiOperation({ summary: 'Отримати книги по классам' })
+  // @ApiBearerAuth('Token')
+  // @ApiUnauthorizedResponse({
+  //   description: ERROR_MSG.userAccess,
+  // })
+  // @ApiOkResponse({
+  //   description: SUCCESS_MSG.getBooks,
+  // })
+  // @ApiNotFoundResponse({ description: ERROR_MSG.booksNotFound })
+  // @ApiInternalServerErrorResponse({ description: ERROR_MSG.server })
+  // @Get('books/by/:classNumber')
+  // @UseGuards(JwtAuthGuard, RoleGuard(ROLE.general))
+  // getBooksByClassNumber(
+  //   @Query('page') page: string,
+  //   @Query('limit') limit: string,
+  //   @Param('classNumber') classNumber: string,
+  // ): Promise<{ books: Book[]; total: number; totalPrice: number }> {
+  //   return this.catalogService.getBooksByClassNumber(page, limit, classNumber);
+  // }
 
   @ApiOperation({ summary: 'Отримати одну книгу' })
   @ApiBearerAuth('Token')
